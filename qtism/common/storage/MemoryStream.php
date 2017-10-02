@@ -14,7 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2013 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2013-2017 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  * @author Jérôme Bogaerts, <jerome@taotesting.com>
  * @license GPLv2
@@ -200,13 +200,9 @@ class MemoryStream implements IStream {
      */
     public function write($data) {
         
-        if ($this->length - 1 === $this->position) {
+        if ($this->length === $this->position) {
             // simply append.
             $this->binary .= $data;
-        }
-        else if ($this->position === 0) {
-            // simply prepend.
-            $this->binary = ($data . $this->binary);
         }
         else {
             // we are in the middle of the string.
@@ -216,8 +212,9 @@ class MemoryStream implements IStream {
         }
         
         $dataLen = strlen($data);
-        $this->incrementPosition($dataLen);
-        $this->incrementLength($dataLen);
+        $this->position += $dataLen;
+        $this->length += $dataLen;
+        
         return $dataLen;
     }
     
